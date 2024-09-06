@@ -93,6 +93,7 @@ requests==2.32.3
     # via cookiecutter
 rich==13.8.0
     # via cookiecutter
+ruff==0.6.4
 six==1.16.0
     # via python-dateutil
     # via repath
