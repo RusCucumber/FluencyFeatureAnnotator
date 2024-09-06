@@ -1,0 +1,26 @@
+[project]
+name = "fluencyfeatureannotator"
+version = "0.1.0"
+description = "Add your description here"
+authors = [
+    { name = "RusCucumber", email = "w.d.ryu.m@gmail.com" }
+]
+dependencies = [
+    "pip>=24.2",
+]
+readme = "README.md"
+requires-python = ">= 3.8"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.rye]
+managed = true
+dev-dependencies = []
+
+[tool.hatch.metadata]
+allow-direct-references = true
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/fluencyfeatureannotator"]
