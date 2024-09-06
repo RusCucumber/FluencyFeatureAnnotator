@@ -6,7 +6,7 @@ authors = [
     { name = "RusCucumber", email = "w.d.ryu.m@gmail.com" }
 ]
 dependencies = [
-    "pip>=24.2",
+    "flet>=0.24.1",
 ]
 readme = "README.md"
 requires-python = ">= 3.8"
