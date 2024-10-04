@@ -1,6 +1,4 @@
-from enum import Enum
-from typing import List
-
+import numpy as np
 from modules.common import RESOURCES_PATH
 from modules.models.utils.base import DistilBertTokenClassifierBase
 
@@ -14,6 +12,6 @@ class PunctuationPredictor(DistilBertTokenClassifierBase):
     def from_finetuned(cls, device: str ="cpu") -> 'PunctuationPredictor':
         return super().from_finetuned(FINETUED_PUNCTUATION_PREDICTOR, device=device)
 
-    def preprocess_predict(self, text: str) -> List[Enum]:
+    def preprocess_predict(self, text: str) -> np.ndarray:
         text = [text]
         return super().preprocess_predict(text)
