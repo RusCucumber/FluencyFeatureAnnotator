@@ -28,6 +28,8 @@ dependencies = [
     "torch>=2.4.1",
     "torchaudio>=2.4.1",
     "pandas>=2.2.3",
+    "praat-parselmouth>=0.4.4",
+    "webrtcvad>=2.0.10",
 ]
 readme = "README.md"
 requires-python = ">= 3.8"
