@@ -201,7 +201,7 @@ packaging==23.2
     # via torchmetrics
     # via transformers
     # via weasel
-pandas==1.3.4
+pandas==2.2.3
     # via fluencyfeatureannotator
 pillow==10.4.0
     # via matplotlib
@@ -382,6 +382,7 @@ typing-extensions==4.12.2
     # via typer
     # via uvicorn
 tzdata==2024.1
+    # via pandas
     # via pydantic
 urllib3==2.2.2
     # via requests
