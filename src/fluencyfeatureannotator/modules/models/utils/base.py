@@ -42,7 +42,9 @@ class DistilBertTokenClassifierBase:
             config = json.load(f)
 
         classifier = cls(n_class=config["n_class"], device=device)
-        classifier.model.load_state_dict(torch.load(model_dir / "finetuned_model.pt"))
+        classifier.model.load_state_dict(
+            torch.load(model_dir / "finetuned_model.pt", map_location=torch.device(device))
+        )
         classifier.tag = config["tag"]
 
         return classifier
@@ -271,7 +273,9 @@ class RobertaTokenClassifierBase:
             config = json.load(f)
 
         classifier = cls(n_class=config["n_class"], ignore_tag=config["ignore_tag"], device=device)
-        classifier.model.load_state_dict(torch.load(model_dir / "checkpoint.pt"))
+        classifier.model.load_state_dict(
+            torch.load(model_dir / "checkpoint.pt", map_location=torch.device(device))
+        )
         classifier.tag = config["tag"]
 
         return classifier

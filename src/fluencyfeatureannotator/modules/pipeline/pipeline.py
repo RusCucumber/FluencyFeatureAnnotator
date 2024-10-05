@@ -92,7 +92,7 @@ class Annotator:
         self,
         turn: Turn,
         pause_location: List[dict],
-        save_path: Union[str, Path] =None
+        save_path: Optional[Union[str, Path]] =None
     ) -> textgrids.TextGrid:
         save_textgrid = True
 

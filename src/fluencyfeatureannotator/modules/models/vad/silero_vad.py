@@ -34,7 +34,7 @@ class SileroVAD:
         self.t_step = t_step
 
     @property
-    def vad(self) -> torch.Module:
+    def vad(self) -> torch.nn.Module:
         return self._vad
 
     @vad.setter
