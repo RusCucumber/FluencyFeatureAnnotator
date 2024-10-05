@@ -1,0 +1,9 @@
+{
+    "learned_date": "2024-05-15",
+    "n_class": 2,
+    "ignore_tag": -100,
+    "tag": {
+        "O": 0,
+        "I": 1
+    }
+}
