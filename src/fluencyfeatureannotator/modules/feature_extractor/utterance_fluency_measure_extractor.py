@@ -6,7 +6,7 @@ from modules.common import Turn
 from textgrids import TextGrid
 
 
-class UtteranceFluencyFeatureExtractor:
+class UtteranceFluencyMeasureExtractor:
     def __init__(
         self, sr:bool =True, mcpr:bool =True, ecpr:bool =True, mcpd:bool =True,
         ecpd:bool =True, fp_ratio:bool =True, dys_ratio:bool =True, dys_rate:bool =True,
