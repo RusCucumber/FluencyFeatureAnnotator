@@ -11,3 +11,7 @@ wheels/
 
 # ignore playground directory
 /playground
+
+# ignore pretrained models
+*.pt
+stanza_resources
