@@ -173,7 +173,7 @@ class Annotator:
         filler = []
         for word in turn.words:
             if isinstance(word, DisfluencyWord):
-                kind = word.dismodules.name
+                kind = word.disfluency.name
                 start = word.start_time
 
                 point = textgrids.Point(f"__point__{word.text}", start)
