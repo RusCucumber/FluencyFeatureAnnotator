@@ -59,6 +59,12 @@ class UtteranceFluencyMeasureExtractor:
             "mean_pause_duration": self.calc_mean_pause_duration
         }
 
+        self.__word = df_col_word
+        self.__pause = df_col_pause
+        self.__p_dur = df_col_pdur
+        self.__mc_tag = mc_tag
+        self.__ec_tag = ec_tag
+
     def extract_by_parameters(self, params: dict) -> List[float]:
         feature_list = []
         for feature, is_calc in self.config.items():
