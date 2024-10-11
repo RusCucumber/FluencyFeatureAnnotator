@@ -20,7 +20,7 @@ from .lightning import AcousticModelModule
 from .tokenizer import EnglishPhonemeTokenizer
 from .transforms import TestTransform
 
-CWD = Path.cwd()
+CWD = Path(__file__).parent
 sys.path.append(
     str(CWD / "utils")
 )
