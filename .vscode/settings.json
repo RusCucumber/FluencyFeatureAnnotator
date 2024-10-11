@@ -6,6 +6,7 @@
         }
     },
     "python.analysis.extraPaths": [
-        "./src/fluencyfeatureannotator"
+        "./src/fluencyfeatureannotator",
+        "./src/fluencyfeatureannotator/modules/forced_alignment/utils"
     ]
 }
