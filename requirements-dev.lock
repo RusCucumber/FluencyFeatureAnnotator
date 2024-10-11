@@ -22,16 +22,36 @@ annotated-types==0.7.0
     # via pydantic
 anyio==4.4.0
     # via httpx
+    # via jupyter-server
     # via starlette
     # via watchfiles
+appnope==0.1.4
+    # via ipykernel
+argon2-cffi==23.1.0
+    # via jupyter-server
+argon2-cffi-bindings==21.2.0
+    # via argon2-cffi
 arrow==1.3.0
     # via cookiecutter
+    # via isoduration
+asttokens==2.4.1
+    # via stack-data
+async-lru==2.0.4
+    # via jupyterlab
 async-timeout==4.0.3
     # via aiohttp
 attrs==24.2.0
     # via aiohttp
+    # via jsonschema
+    # via referencing
+babel==2.16.0
+    # via jupyterlab-server
+beautifulsoup4==4.12.3
+    # via nbconvert
 binaryornot==0.4.4
     # via cookiecutter
+bleach==6.1.0
+    # via nbconvert
 blis==1.0.1
     # via thinc
 cachetools==5.5.0
@@ -44,16 +64,25 @@ certifi==2024.8.30
     # via httpcore
     # via httpx
     # via requests
+cffi==1.17.1
+    # via argon2-cffi-bindings
+    # via soundfile
 chardet==5.2.0
     # via binaryornot
 charset-normalizer==3.3.2
     # via requests
 click==8.1.7
     # via cookiecutter
+    # via nltk
     # via typer
     # via uvicorn
 cloudpathlib==0.19.0
     # via weasel
+cmudict==1.0.31
+    # via fluencyfeatureannotator
+comm==0.2.2
+    # via ipykernel
+    # via ipywidgets
 confection==0.1.5
     # via thinc
     # via weasel
@@ -65,10 +94,23 @@ cymem==2.0.8
     # via preshed
     # via spacy
     # via thinc
+debugpy==1.8.6
+    # via ipykernel
+decorator==5.1.1
+    # via ipython
+defusedxml==0.7.1
+    # via nbconvert
+distance==0.1.3
+    # via g2p-en
 exceptiongroup==1.2.2
     # via anyio
+    # via ipython
+executing==2.1.0
+    # via stack-data
 fastapi==0.114.0
     # via flet
+fastjsonschema==2.20.0
+    # via nbformat
 filelock==3.16.1
     # via huggingface-hub
     # via torch
@@ -79,6 +121,8 @@ flet-core==0.24.1
     # via flet-runtime
 flet-runtime==0.24.1
     # via flet
+fqdn==1.5.1
+    # via jsonschema
 frozenlist==1.4.1
     # via aiohttp
     # via aiosignal
@@ -88,6 +132,8 @@ fsspec==2024.9.0
     # via torch
 future==1.0.0
     # via pytorch-lightning
+g2p-en==2.1.0
+    # via fluencyfeatureannotator
 google-api-core==2.20.0
     # via google-cloud-core
     # via google-cloud-speech
@@ -126,21 +172,102 @@ httptools==0.6.1
     # via uvicorn
 httpx==0.27.2
     # via flet-runtime
+    # via jupyterlab
 huggingface-hub==0.25.1
     # via transformers
 idna==3.8
     # via anyio
     # via httpx
+    # via jsonschema
     # via requests
     # via yarl
 importlib-metadata==8.5.0
+    # via cmudict
+    # via jupyter-client
+    # via jupyter-lsp
+    # via jupyterlab
+    # via jupyterlab-server
     # via markdown
+    # via nbconvert
+importlib-resources==6.4.5
+    # via cmudict
 inflect==5.3.0
     # via fluencyfeatureannotator
+    # via g2p-en
+ipykernel==6.29.5
+    # via jupyter
+    # via jupyter-console
+    # via jupyterlab
+ipython==8.18.1
+    # via ipykernel
+    # via ipywidgets
+    # via jupyter-console
+ipywidgets==8.1.5
+    # via jupyter
+isoduration==20.11.0
+    # via jsonschema
+jedi==0.19.1
+    # via ipython
 jinja2==3.1.4
     # via cookiecutter
+    # via jupyter-server
+    # via jupyterlab
+    # via jupyterlab-server
+    # via nbconvert
     # via spacy
     # via torch
+joblib==1.4.2
+    # via nltk
+json5==0.9.25
+    # via jupyterlab-server
+jsonpointer==3.0.0
+    # via jsonschema
+jsonschema==4.23.0
+    # via jupyter-events
+    # via jupyterlab-server
+    # via nbformat
+jsonschema-specifications==2023.12.1
+    # via jsonschema
+jupyter==1.1.1
+    # via fluencyfeatureannotator
+jupyter-client==8.6.3
+    # via ipykernel
+    # via jupyter-console
+    # via jupyter-server
+    # via nbclient
+jupyter-console==6.6.3
+    # via jupyter
+jupyter-core==5.7.2
+    # via ipykernel
+    # via jupyter-client
+    # via jupyter-console
+    # via jupyter-server
+    # via jupyterlab
+    # via nbclient
+    # via nbconvert
+    # via nbformat
+jupyter-events==0.10.0
+    # via jupyter-server
+jupyter-lsp==2.2.5
+    # via jupyterlab
+jupyter-server==2.13.0
+    # via jupyter-lsp
+    # via jupyterlab
+    # via jupyterlab-server
+    # via notebook
+    # via notebook-shim
+jupyter-server-terminals==0.5.3
+    # via jupyter-server
+jupyterlab==4.2.5
+    # via jupyter
+    # via notebook
+jupyterlab-pygments==0.3.0
+    # via nbconvert
+jupyterlab-server==2.27.3
+    # via jupyterlab
+    # via notebook
+jupyterlab-widgets==3.0.13
+    # via ipywidgets
 kiwisolver==1.4.7
     # via matplotlib
 langcodes==3.4.1
@@ -159,10 +286,16 @@ markdown-it-py==3.0.0
     # via rich
 markupsafe==2.1.5
     # via jinja2
+    # via nbconvert
 matplotlib==3.4.3
     # via fluencyfeatureannotator
+matplotlib-inline==0.1.7
+    # via ipykernel
+    # via ipython
 mdurl==0.1.2
     # via markdown-it-py
+mistune==3.0.2
+    # via nbconvert
 mpmath==1.3.0
     # via sympy
 multidict==6.1.0
@@ -172,11 +305,30 @@ murmurhash==1.0.10
     # via preshed
     # via spacy
     # via thinc
+nbclient==0.10.0
+    # via nbconvert
+nbconvert==7.16.4
+    # via jupyter
+    # via jupyter-server
+nbformat==5.10.4
+    # via jupyter-server
+    # via nbclient
+    # via nbconvert
+nest-asyncio==1.6.0
+    # via ipykernel
 networkx==3.2.1
     # via torch
+nltk==3.9.1
+    # via g2p-en
+notebook==7.2.2
+    # via jupyter
+notebook-shim==0.2.4
+    # via jupyterlab
+    # via notebook
 numpy==2.0.2
     # via blis
     # via fluencyfeatureannotator
+    # via g2p-en
     # via matplotlib
     # via pandas
     # via praat-parselmouth
@@ -190,11 +342,18 @@ numpy==2.0.2
     # via transformers
 oauthlib==3.2.2
     # via flet-runtime
+overrides==7.7.0
+    # via jupyter-server
 packaging==23.2
     # via flet
     # via google-cloud-speech
     # via huggingface-hub
+    # via ipykernel
+    # via jupyter-server
+    # via jupyterlab
+    # via jupyterlab-server
     # via lightning-utilities
+    # via nbconvert
     # via pytorch-lightning
     # via spacy
     # via tensorboard
@@ -204,10 +363,18 @@ packaging==23.2
     # via weasel
 pandas==2.2.3
     # via fluencyfeatureannotator
+pandocfilters==1.5.1
+    # via nbconvert
+parso==0.8.4
+    # via jedi
+pexpect==4.9.0
+    # via ipython
 pillow==10.4.0
     # via matplotlib
 pip==24.2
     # via fluencyfeatureannotator
+platformdirs==4.3.6
+    # via jupyter-core
 praat-parselmouth==0.4.4
     # via fluencyfeatureannotator
 praat-textgrids==1.3.1
@@ -215,6 +382,11 @@ praat-textgrids==1.3.1
 preshed==3.0.9
     # via spacy
     # via thinc
+prometheus-client==0.21.0
+    # via jupyter-server
+prompt-toolkit==3.0.48
+    # via ipython
+    # via jupyter-console
 proto-plus==1.24.0
     # via google-api-core
     # via google-cloud-speech
@@ -226,11 +398,20 @@ protobuf==5.28.2
     # via proto-plus
     # via stanza
     # via tensorboard
+psutil==6.0.0
+    # via ipykernel
+ptyprocess==0.7.0
+    # via pexpect
+    # via terminado
+pure-eval==0.2.3
+    # via stack-data
 pyasn1==0.6.1
     # via pyasn1-modules
     # via rsa
 pyasn1-modules==0.4.1
     # via google-auth
+pycparser==2.22
+    # via cffi
 pydantic==2.9.0
     # via confection
     # via fastapi
@@ -244,6 +425,9 @@ pydeprecate==0.3.1
 pydub==0.25.1
     # via fluencyfeatureannotator
 pygments==2.18.0
+    # via ipython
+    # via jupyter-console
+    # via nbconvert
     # via rich
 pyparsing==3.1.4
     # via matplotlib
@@ -251,10 +435,13 @@ pypng==0.20220715.0
     # via qrcode
 python-dateutil==2.9.0.post0
     # via arrow
+    # via jupyter-client
     # via matplotlib
     # via pandas
 python-dotenv==1.0.1
     # via uvicorn
+python-json-logger==2.0.7
+    # via jupyter-events
 python-slugify==8.0.4
     # via cookiecutter
 pytorch-lightning==1.5.10
@@ -264,13 +451,24 @@ pytz==2024.2
 pyyaml==6.0.2
     # via cookiecutter
     # via huggingface-hub
+    # via jupyter-events
     # via libcst
     # via pytorch-lightning
     # via transformers
     # via uvicorn
+pyzmq==26.2.0
+    # via ipykernel
+    # via jupyter-client
+    # via jupyter-console
+    # via jupyter-server
 qrcode==7.4.2
     # via flet
+referencing==0.35.1
+    # via jsonschema
+    # via jsonschema-specifications
+    # via jupyter-events
 regex==2024.9.11
+    # via nltk
     # via transformers
 repath==0.9.0
     # via flet-core
@@ -279,6 +477,7 @@ requests==2.32.3
     # via google-api-core
     # via google-cloud-storage
     # via huggingface-hub
+    # via jupyterlab-server
     # via rev-ai
     # via spacy
     # via stanza
@@ -286,15 +485,27 @@ requests==2.32.3
     # via weasel
 rev-ai==2.15.0
     # via fluencyfeatureannotator
+rfc3339-validator==0.1.4
+    # via jsonschema
+    # via jupyter-events
+rfc3986-validator==0.1.1
+    # via jsonschema
+    # via jupyter-events
 rich==13.8.0
     # via cookiecutter
     # via typer
+rpds-py==0.20.0
+    # via jsonschema
+    # via referencing
 rsa==4.9
     # via google-auth
 ruff==0.6.4
+send2trash==1.8.3
+    # via jupyter-server
 sentencepiece==0.2.0
     # via fluencyfeatureannotator
 setuptools==59.5.0
+    # via jupyterlab
     # via lightning-utilities
     # via marisa-trie
     # via pytorch-lightning
@@ -304,10 +515,13 @@ setuptools==59.5.0
 shellingham==1.5.4
     # via typer
 six==1.16.0
+    # via asttokens
+    # via bleach
     # via google-cloud-storage
     # via python-dateutil
     # via repath
     # via rev-ai
+    # via rfc3339-validator
     # via tensorboard
     # via websocket-client
 smart-open==7.0.5
@@ -315,6 +529,10 @@ smart-open==7.0.5
 sniffio==1.3.1
     # via anyio
     # via httpx
+soundfile==0.12.1
+    # via fluencyfeatureannotator
+soupsieve==2.6
+    # via beautifulsoup4
 spacy==3.8.2
     # via fluencyfeatureannotator
     # via spacy-transformers
@@ -332,6 +550,8 @@ srsly==2.4.8
     # via spacy-transformers
     # via thinc
     # via weasel
+stack-data==0.6.3
+    # via ipython
 stanza==1.2.3
     # via fluencyfeatureannotator
 starlette==0.38.4
@@ -344,13 +564,20 @@ tensorboard==2.18.0
     # via pytorch-lightning
 tensorboard-data-server==0.7.2
     # via tensorboard
+terminado==0.18.1
+    # via jupyter-server
+    # via jupyter-server-terminals
 text-unidecode==1.3
     # via python-slugify
 thinc==8.3.2
     # via spacy
+tinycss2==1.3.0
+    # via nbconvert
 tokenizers==0.11.6
     # via fluencyfeatureannotator
     # via transformers
+tomli==2.0.2
+    # via jupyterlab
 torch==2.4.1
     # via fluencyfeatureannotator
     # via pytorch-lightning
@@ -362,13 +589,36 @@ torchaudio==2.4.1
     # via fluencyfeatureannotator
 torchmetrics==1.4.2
     # via pytorch-lightning
+tornado==6.4.1
+    # via ipykernel
+    # via jupyter-client
+    # via jupyter-server
+    # via jupyterlab
+    # via notebook
+    # via terminado
 tqdm==4.64.1
     # via fluencyfeatureannotator
     # via huggingface-hub
+    # via nltk
     # via pytorch-lightning
     # via spacy
     # via stanza
     # via transformers
+traitlets==5.14.3
+    # via comm
+    # via ipykernel
+    # via ipython
+    # via ipywidgets
+    # via jupyter-client
+    # via jupyter-console
+    # via jupyter-core
+    # via jupyter-events
+    # via jupyter-server
+    # via jupyterlab
+    # via matplotlib-inline
+    # via nbclient
+    # via nbconvert
+    # via nbformat
 transformers==4.20.1
     # via fluencyfeatureannotator
     # via spacy-transformers
@@ -379,9 +629,11 @@ types-python-dateutil==2.9.0.20240906
     # via arrow
 typing-extensions==4.12.2
     # via anyio
+    # via async-lru
     # via cloudpathlib
     # via fastapi
     # via huggingface-hub
+    # via ipython
     # via lightning-utilities
     # via multidict
     # via pydantic
@@ -395,6 +647,10 @@ typing-extensions==4.12.2
 tzdata==2024.1
     # via pandas
     # via pydantic
+unidecode==1.3.8
+    # via fluencyfeatureannotator
+uri-template==1.3.0
+    # via jsonschema
 urllib3==2.2.2
     # via requests
 uvicorn==0.30.6
@@ -409,20 +665,31 @@ watchdog==4.0.2
     # via flet
 watchfiles==0.24.0
     # via uvicorn
+wcwidth==0.2.13
+    # via prompt-toolkit
 weasel==0.4.1
     # via spacy
+webcolors==24.8.0
+    # via jsonschema
+webencodings==0.5.1
+    # via bleach
+    # via tinycss2
 webrtcvad==2.0.10
     # via fluencyfeatureannotator
 websocket-client==0.59.0
+    # via jupyter-server
     # via rev-ai
 websockets==13.0.1
     # via uvicorn
 werkzeug==2.0.3
     # via fluencyfeatureannotator
     # via tensorboard
+widgetsnbextension==4.0.13
+    # via ipywidgets
 wrapt==1.16.0
     # via smart-open
 yarl==1.13.1
     # via aiohttp
 zipp==3.20.2
     # via importlib-metadata
+    # via importlib-resources
