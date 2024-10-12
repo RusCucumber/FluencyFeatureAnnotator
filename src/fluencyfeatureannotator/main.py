@@ -2,7 +2,8 @@ from pathlib import Path
 from typing import List
 
 import flet as ft
-from fluency_feature_annotator import FluencyFeatureAnnotator
+import pandas as pd
+from fluency_feature_annotator import FluencyFeatureAnnotator, TextGrid, Turn, save_grid, save_turn
 
 
 class WavTxtFilePicker(ft.FilePicker):
@@ -83,7 +84,8 @@ class WavTxtFileManager(ft.Column):
             text="Annotate fluency features",
             icon=ft.icons.MULTITRACK_AUDIO_ROUNDED,
             on_click=lambda _: self.save_file_dialog.save_file(
-                file_name="result"
+                file_name="result.csv",
+                allowed_extensions=["csv"]
             ),
             width=300
         )
@@ -99,6 +101,27 @@ class WavTxtFileManager(ft.Column):
             ])
         ]
 
+    def save_results(
+        self,
+        save_csv_path: str,
+        picked_wav_file_path_list: List[Path],
+        turn_list: List[Turn],
+        grid_list: List[TextGrid],
+        measure_list: List[List[float]],
+        measure_names: List[str]
+    ) -> None:
+        save_csv_path = Path(picked_wav_file_path_list)
+
+        for turn, grid, wav_path in zip(turn_list, grid_list, picked_wav_file_path_list):
+            save_txt_path = save_csv_path.parent / f"{wav_path.stem}.txt"
+            save_grid_path = save_csv_path.parent / f"{wav_path.stem}.TextGrid"
+
+            save_turn(turn, save_txt_path)
+            save_grid(grid, save_grid_path)
+
+        df_measures = pd.DataFrame(measure_list, columns=measure_names)
+        df_measures.to_csv(save_csv_path, index=False)
+
     def annotate(
         self,
         e: ft.FilePickerResultEvent,
@@ -110,8 +133,17 @@ class WavTxtFileManager(ft.Column):
             picked_txt_file_path_list
         )
 
-        # TODO: save grid, pruned/unpruned txt, & UF measures
-        return
+        measure_list, measure_names = self.annotator.extract(turn_list, grid_list)
+
+        self.save_results(
+            e.path,
+            picked_wav_file_path_list,
+            turn_list,
+            grid_list,
+            measure_list,
+            measure_names
+        )
+
 
 def main(page: ft.Page):
     annotator = FluencyFeatureAnnotator()

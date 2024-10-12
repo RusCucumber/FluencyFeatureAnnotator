@@ -1,6 +1,6 @@
 from pathlib import Path
 from traceback import format_exc
-from typing import Generator, List, Tuple
+from typing import Generator, List, Tuple, Union
 
 import pandas as pd
 from modules import Annotator, DisfluencyEnum, Turn, UtteranceFluencyMeasureExtractor
@@ -16,6 +16,7 @@ class FluencyFeatureAnnotator:
     def __init__(self) -> None:
         self.fa = LessPeakyCTCFA()
         self.annotator = Annotator(process=["eos_detect", "pruning", "clause_detect"])
+        self.extractor = UtteranceFluencyMeasureExtractor()
 
     def preprocess_for_turn(self, rev_transcript: Transcript) -> Tuple[pd.DataFrame, List[int]]:
         df_rev = transcript_2_df(rev_transcript)
@@ -135,10 +136,56 @@ class FluencyFeatureAnnotator:
 
         return turn_list, grid_list
 
-    def extract(self, turn: Turn, grid: TextGrid):
-        extractor = UtteranceFluencyMeasureExtractor()
+    def extract(self, turn_list: List[Turn], grid_list: List[TextGrid]) -> Tuple[List[List[float]], List[str]]:
+        measure_list = []
+        for turn, grid in zip(turn_list, grid_list):
+            measures = self.extractor.extract_by_turn(turn, grid)
+            measure_list.append(measures)
 
-        features = extractor.extract_by_turn(turn, grid)
-        feature_names = extractor.check_feature_names()
+        measure_names = self.extractor.check_feature_names()
 
-        return features, feature_names
+        return measure_list, measure_names
+
+def save_turn(turn: Turn, save_path: Union[str, Path]) -> None:
+    lines = []
+    turn.show_disfluency()
+    line = []
+    for clause in turn.clauses:
+        line.append(str(clause))
+
+    lines.append(f"text_without_pruning: {' :: '.join(line)}\n\n")
+
+    turn.ignore_disfluency()
+    line = []
+    for clause in turn.clauses:
+        line.append(str(clause))
+    lines.append(f"text_with_pruning: {' :: '.join(line)}")
+
+    with open(save_path, "w") as f:
+        f.writelines(lines)
+
+def save_grid(grid: TextGrid, save_path: Union[str, Path]) -> None:
+    if isinstance(save_path, str):
+        textgrid_path = Path(save_path)
+    elif isinstance(textgrid_path, Path):
+        textgrid_path = textgrid_path.resolve()
+    else:
+        raise ValueError("textgrid_path must be path like object")
+
+    grid.write(textgrid_path)
+
+    grid = []
+    with open(textgrid_path, "r") as f:
+        for line in f.readlines():
+            if "PointTier" in line:
+                line = line.replace("PointTier", "TextTier")
+            elif "xpos" in line:
+                line = line.replace("xpos", "number")
+            elif "__point__" in line:
+                line = line.replace("text", "mark")
+                line = line.replace("__point__", "")
+
+            grid.append(line)
+
+    with open(textgrid_path, "w") as f:
+        f.writelines(grid)
