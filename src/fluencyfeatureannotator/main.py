@@ -136,8 +136,23 @@ class WavTxtFileManager(ft.Column):
             )
         )
 
-        self.progress_ring = ft.ProgressRing()
-        self.progress_ring.visible = False
+        self.progress_ring = ft.Container(
+            width = 500,
+            height = 300,
+            margin = 10,
+            padding = 20,
+            border = ft.border.all(5, color=ft.colors.PRIMARY),
+            border_radius = ft.border_radius.all(30),
+            bgcolor = ft.colors.with_opacity(opacity=0.8, color="#eeeeee"),
+            content=ft.Row(
+                controls=[
+                    ft.ProgressRing(width=20, height=20, stroke_width=4),
+                    ft.Text("Annotating...", size=20)
+                ],
+                alignment=ft.MainAxisAlignment.CENTER
+            ),
+            visible=False
+        )
 
         self.select_button = ft.ElevatedButton(
             text="Select wav & txt files",
@@ -164,12 +179,14 @@ class WavTxtFileManager(ft.Column):
                 self.pick_file_dialog,
                 self.select_button
             ]),
-            self.selected_file_container,
+            ft.Stack(controls=[
+                self.selected_file_container,
+                self.progress_ring
+            ]),
             ft.Stack(controls=[
                 self.save_file_dialog,
                 self.annotate_button
-            ]),
-            self.progress_ring
+            ])
         ]
 
     def save_results(
@@ -193,15 +210,43 @@ class WavTxtFileManager(ft.Column):
         df_measures = pd.DataFrame(measure_list, columns=measure_names)
         df_measures.to_csv(save_csv_path, index=False)
 
+    def disable_control(self):
+        self.select_button.disabled = True
+        self.select_button.style = ft.ButtonStyle(color="#eeeeee")
+
+        self.annotate_button.disabled = True
+        self.annotate_button.style = ft.ButtonStyle(bgcolor="#eeeeee")
+
+        self.progress_ring.visible = True
+
+        self.update()
+
+    def enable_control(self):
+        self.select_button.disabled = False
+        self.select_button.style = ft.ButtonStyle(color=ft.colors.PRIMARY)
+
+        self.annotate_button.disabled = False
+        self.annotate_button.style = ft.ButtonStyle(bgcolor=ft.colors.PRIMARY)
+
+        self.progress_ring.visible = False
+
+        self.selected_file_container.selected_file_list.controls.append(
+            ft.Text(
+                "・ Annotation finished!",
+                theme_style=ft.TextThemeStyle.LABEL_LARGE,
+                color=ft.colors.LIGHT_GREEN
+            )
+        )
+
+        self.update()
+
     def annotate(
         self,
         e: ft.FilePickerResultEvent,
         picked_wav_file_path_list: List[Path],
         picked_txt_file_path_list: List[Path]
     ) -> None:
-        self.annotate_button.disabled = True
-        self.progress_ring.visible = True
-        self.update()
+        self.disable_control()
 
         turn_list, grid_list = self.annotator.annotate(
             picked_wav_file_path_list,
@@ -219,9 +264,7 @@ class WavTxtFileManager(ft.Column):
             measure_names
         )
 
-        self.annotate_button.disabled = False
-        self.progress_ring.visible = False
-        self.update()
+        self.enable_control()
 
 class AnnotatorLoadingProgressBar(ft.Row):
     def __init__(self):
