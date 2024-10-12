@@ -3,6 +3,8 @@ from typing import List
 
 import flet as ft
 
+from .fluency_feature_annotator import FluencyFeatureAnnotator
+
 
 class WavTxtFilePicker(ft.FilePicker):
     def __init__(self):
@@ -53,8 +55,10 @@ class WavTxtFilePicker(ft.FilePicker):
             self.picked_txt_path_list = picked_txt_path_list
 
 class WavTxtFileManager(ft.Column):
-    def __init__(self):
+    def __init__(self, annotator: FluencyFeatureAnnotator):
         super().__init__()
+
+        self.annotator = annotator
 
         self.pick_file_dialog = WavTxtFilePicker()
 
@@ -102,12 +106,16 @@ class WavTxtFileManager(ft.Column):
         picked_wav_file_path_list: List[Path],
         picked_txt_file_path_list: List[Path]
     ) -> None:
-        print(picked_wav_file_path_list)
-        print(picked_txt_file_path_list)
-        pass
+        turn_list, grid_list = self.annotator.annotate(
+            picked_wav_file_path_list,
+            picked_txt_file_path_list
+        )
+
+        return
 
 def main(page: ft.Page):
-    page.add(WavTxtFileManager())
+    annotator = FluencyFeatureAnnotator()
+    page.add(WavTxtFileManager(annotator))
 
 
 ft.app(main)
