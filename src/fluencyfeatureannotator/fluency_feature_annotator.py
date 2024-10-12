@@ -96,7 +96,10 @@ class FluencyFeatureAnnotator:
         self,
         wav_file_path_list: List[Path],
         txt_file_path_list: List[Path]
-    ) -> Tuple[Turn, TextGrid]:
+    ) -> Tuple[List[Turn], List[TextGrid]]:
+        turn_list = []
+        grid_list = []
+
         for file_path in self.wav_txt_file_path_generator(wav_file_path_list, txt_file_path_list):
             wav_file_path, txt_file_path = file_path
 
@@ -127,7 +130,10 @@ class FluencyFeatureAnnotator:
             pauses = self.find_pauses(turn)
             grid = self.annotator.to_textgrid(turn, pauses)
 
-            return turn, grid
+            turn_list.append(turn)
+            grid_list.append(grid)
+
+        return turn_list, grid_list
 
     def extract(self, turn: Turn, grid: TextGrid):
         extractor = UtteranceFluencyMeasureExtractor()
