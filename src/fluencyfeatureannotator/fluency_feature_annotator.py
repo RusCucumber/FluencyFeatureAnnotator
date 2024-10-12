@@ -4,7 +4,7 @@ from typing import Generator, List, Tuple, Union
 
 import pandas as pd
 from modules import Annotator, DisfluencyEnum, Turn, UtteranceFluencyMeasureExtractor
-from modules.forced_alignment.fa import LessPeakyCTCFA
+from modules.forced_alignment.fa import Wav2VecCTCFA
 from modules.forced_alignment.utils.rev.df_2_rev import df_2_rev
 from modules.pipeline.utils.pause_location import PauseLocation
 from modules.utils.rev_utils import FILLER, transcript_2_df
@@ -14,7 +14,7 @@ from textgrids import TextGrid
 
 class FluencyFeatureAnnotator:
     def __init__(self) -> None:
-        self.fa = LessPeakyCTCFA()
+        self.fa = Wav2VecCTCFA()
         self.annotator = Annotator(process=["eos_detect", "pruning", "clause_detect"])
         self.extractor = UtteranceFluencyMeasureExtractor()
 
@@ -108,7 +108,7 @@ class FluencyFeatureAnnotator:
                 transcript = f.readline()
 
             try:
-                df_fa = self.fa.align(wav_file_path, transcript, visualize_result=False)
+                df_fa = self.fa.align(wav_file_path, transcript)
                 rev_transcript = df_2_rev(df_fa)
                 rev_transcript = Transcript.from_json(rev_transcript)
             except Exception:
