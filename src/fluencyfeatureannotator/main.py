@@ -1,5 +1,5 @@
 from pathlib import Path
-from typing import List, Optional
+from typing import List
 
 import flet as ft
 import pandas as pd
@@ -54,31 +54,6 @@ class WavTxtFilePicker(ft.FilePicker):
             self.picked_wav_path_list = picked_wav_path_list
             self.picked_txt_path_list = picked_txt_path_list
 
-class FileHandlingProgressBar(ft.Column):
-    def __init__(
-            self,
-            initial_message: str =None,
-            initial_progress: float =0.0,
-            bar_width: int =400
-        ) -> None:
-        super().__init__()
-
-        self.dialog = ft.Text(value=initial_message)
-        self.progress_bar = ft.ProgressBar(value=initial_progress, width=bar_width)
-
-        self.controls = [
-            self.dialog,
-            self.progress_bar
-        ]
-
-    def update_value(self, message: Optional[str] =None, progress: Optional[float] =None) -> None:
-        if message:
-            self.dialog.value = message
-        if progress:
-            self.progress_bar.value = progress
-
-        super().update()
-
 class WavTxtFileManager(ft.Column):
     def __init__(self, annotator: FluencyFeatureAnnotator):
         super().__init__()
@@ -94,8 +69,6 @@ class WavTxtFileManager(ft.Column):
                 self.pick_file_dialog.picked_txt_path_list
             )
         )
-
-        self.progress_bar = FileHandlingProgressBar()
 
         self.select_button = ft.ElevatedButton(
             text="Select wav & txt files",
@@ -125,8 +98,7 @@ class WavTxtFileManager(ft.Column):
             ft.Stack(controls=[
                 self.save_file_dialog,
                 self.annotate_button
-            ]),
-            self.progress_bar
+            ])
         ]
 
     def save_results(
@@ -172,9 +144,34 @@ class WavTxtFileManager(ft.Column):
             measure_names
         )
 
+class AnnotatorLoadingProgressBar(ft.Row):
+    def __init__(self):
+        super().__init__()
+
+        loading_progress_bar = ft.Column(
+            controls=[
+                ft.Text(
+                    "Loading Fluency Feature Annotator...",
+                    theme_style=ft.TextThemeStyle.TITLE_LARGE,
+                    text_align=ft.TextAlign.CENTER
+                ),
+                ft.ProgressBar(width=650, bgcolor="#eeeeee")
+            ],
+            alignment=ft.MainAxisAlignment.CENTER
+        )
+
+        self.controls = [
+            loading_progress_bar
+        ]
+        self.alignment = ft.MainAxisAlignment.CENTER
 
 def main(page: ft.Page):
+    annotator_loading_progress_bar = AnnotatorLoadingProgressBar()
+    page.add(annotator_loading_progress_bar)
+
     annotator = FluencyFeatureAnnotator()
+
+    page.remove(annotator_loading_progress_bar)
     page.add(WavTxtFileManager(annotator))
 
 
