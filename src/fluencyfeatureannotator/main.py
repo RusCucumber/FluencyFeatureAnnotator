@@ -70,6 +70,9 @@ class WavTxtFileManager(ft.Column):
             )
         )
 
+        self.progress_ring = ft.ProgressRing()
+        self.progress_ring.visible = False
+
         self.select_button = ft.ElevatedButton(
             text="Select wav & txt files",
             icon=ft.icons.UPLOAD_FILE,
@@ -98,7 +101,8 @@ class WavTxtFileManager(ft.Column):
             ft.Stack(controls=[
                 self.save_file_dialog,
                 self.annotate_button
-            ])
+            ]),
+            self.progress_ring
         ]
 
     def save_results(
@@ -128,6 +132,10 @@ class WavTxtFileManager(ft.Column):
         picked_wav_file_path_list: List[Path],
         picked_txt_file_path_list: List[Path]
     ) -> None:
+        self.annotate_button.disabled = True
+        self.progress_ring.visible = True
+        self.update()
+
         turn_list, grid_list = self.annotator.annotate(
             picked_wav_file_path_list,
             picked_txt_file_path_list
@@ -143,6 +151,10 @@ class WavTxtFileManager(ft.Column):
             measure_list,
             measure_names
         )
+
+        self.annotate_button.disabled = False
+        self.progress_ring.visible = False
+        self.update()
 
 
 def main(page: ft.Page):
