@@ -110,10 +110,10 @@ class WavTxtFileManager(ft.Column):
         measure_list: List[List[float]],
         measure_names: List[str]
     ) -> None:
-        save_csv_path = Path(picked_wav_file_path_list)
+        save_csv_path = Path(save_csv_path)
 
         for turn, grid, wav_path in zip(turn_list, grid_list, picked_wav_file_path_list):
-            save_txt_path = save_csv_path.parent / f"{wav_path.stem}.txt"
+            save_txt_path = save_csv_path.parent / f"{wav_path.stem}_annotated.txt"
             save_grid_path = save_csv_path.parent / f"{wav_path.stem}.TextGrid"
 
             save_turn(turn, save_txt_path)
