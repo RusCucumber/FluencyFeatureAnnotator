@@ -203,9 +203,34 @@ class WavTxtFileManager(ft.Column):
         self.progress_ring.visible = False
         self.update()
 
+class AnnotatorLoadingProgressBar(ft.Row):
+    def __init__(self):
+        super().__init__()
+
+        loading_progress_bar = ft.Column(
+            controls=[
+                ft.Text(
+                    "Loading Fluency Feature Annotator...",
+                    theme_style=ft.TextThemeStyle.TITLE_LARGE,
+                    text_align=ft.TextAlign.CENTER
+                ),
+                ft.ProgressBar(width=650, bgcolor="#eeeeee")
+            ],
+            alignment=ft.MainAxisAlignment.CENTER
+        )
+
+        self.controls = [
+            loading_progress_bar
+        ]
+        self.alignment = ft.MainAxisAlignment.CENTER
 
 def main(page: ft.Page):
+    annotator_loading_progress_bar = AnnotatorLoadingProgressBar()
+    page.add(annotator_loading_progress_bar)
+
     annotator = FluencyFeatureAnnotator()
+
+    page.remove(annotator_loading_progress_bar)
     page.add(WavTxtFileManager(annotator))
 
 
