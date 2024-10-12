@@ -256,10 +256,10 @@ class Wav2VecCTCFA:
         waveform, sample_rate = self.load_audio(audio_file_path)
         waveform = self.resample(waveform, sample_rate)
 
-        cleaned_text = self.preprocess_text(text)
+        cleaned_text = text #self.preprocess_text(text)
         tokens = self.tokenize(cleaned_text)
 
-        return waveform, tokens, sample_rate, cleaned_text
+        return waveform, tokens, cleaned_text
 
     def frame_2_sec(self, frame: int, ratio: float, sample_rate: int) -> float:
         return int(frame * ratio) / sample_rate
@@ -288,7 +288,7 @@ class Wav2VecCTCFA:
         return df_timestamp
 
     def align(self, audio_file_path: Path, text: str) -> Tuple[List[list], float]:
-        waveform, tokens, sample_rate, cleaned_text = self.preprocess(audio_file_path, text)
+        waveform, tokens, cleaned_text = self.preprocess(audio_file_path, text)
 
         with torch.inference_mode():
             emission, _ = self.model(waveform.to(self.device))
@@ -303,6 +303,6 @@ class Wav2VecCTCFA:
 
         ratio = waveform.size(1) / emission.size(1)
 
-        df_timestamp = self.to_dataframe(token_spans, cleaned_text, ratio, sample_rate)
+        df_timestamp = self.to_dataframe(token_spans, cleaned_text, ratio, self.bundle.sample_rate)
 
         return df_timestamp
