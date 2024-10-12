@@ -167,8 +167,8 @@ def save_turn(turn: Turn, save_path: Union[str, Path]) -> None:
 def save_grid(grid: TextGrid, save_path: Union[str, Path]) -> None:
     if isinstance(save_path, str):
         textgrid_path = Path(save_path)
-    elif isinstance(textgrid_path, Path):
-        textgrid_path = textgrid_path.resolve()
+    elif isinstance(save_path, Path):
+        textgrid_path = save_path.resolve()
     else:
         raise ValueError("textgrid_path must be path like object")
 
