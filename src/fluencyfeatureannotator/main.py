@@ -2,8 +2,7 @@ from pathlib import Path
 from typing import List
 
 import flet as ft
-
-from .fluency_feature_annotator import FluencyFeatureAnnotator
+from fluency_feature_annotator import FluencyFeatureAnnotator
 
 
 class WavTxtFilePicker(ft.FilePicker):
@@ -111,6 +110,7 @@ class WavTxtFileManager(ft.Column):
             picked_txt_file_path_list
         )
 
+        # TODO: save grid, pruned/unpruned txt, & UF measures
         return
 
 def main(page: ft.Page):
