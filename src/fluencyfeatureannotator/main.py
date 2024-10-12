@@ -5,14 +5,42 @@ import flet as ft
 import pandas as pd
 from fluency_feature_annotator import FluencyFeatureAnnotator, TextGrid, Turn, save_grid, save_turn
 
+NO_FILE_SELECTED_TEXT = ft.Text("・ No files are selected.", theme_style=ft.TextThemeStyle.LABEL_LARGE)
+
+class SelectedFileContainer(ft.Container):
+    def __init__(self):
+        super().__init__()
+
+        self.width = 500
+        self.height = 300
+        self.margin = 10
+        self.padding = 10
+        self.border = ft.border.all(5, color=ft.colors.PRIMARY)
+        self.border_radius = ft.border_radius.all(30)
+        self.bgcolor = ft.colors.WHITE10
+
+        self.selected_file_list = ft.ListView(
+            expand=1,
+            spacing=10,
+            padding=20,
+            auto_scroll=False,
+            controls=[NO_FILE_SELECTED_TEXT]
+        )
+
+        self.content = self.selected_file_list
 
 class WavTxtFilePicker(ft.FilePicker):
-    def __init__(self):
+    def __init__(
+        self,
+        selected_file_container: SelectedFileContainer
+    ):
         super().__init__()
 
         self.on_result = self.pick_file_results
         self.picked_wav_path_list = []
         self.picked_txt_path_list = []
+
+        self.selected_file_container = selected_file_container
 
     def is_wav_txt_path_pair_picked(
         self,
@@ -33,11 +61,13 @@ class WavTxtFilePicker(ft.FilePicker):
 
         return picked_wav_filename == picked_txt_filename
 
-
     def pick_file_results(self, e: ft.FilePickerResultEvent) -> None:
         if e is None:
             # ファイルが選択されなかった場合
-            # MEMO: Error 処理などを後ほど追加?
+            self.selected_file_container.selected_file_list.controls = [
+                NO_FILE_SELECTED_TEXT
+            ]
+            self.page.update()
             return
 
         picked_wav_path_list = []
@@ -50,9 +80,24 @@ class WavTxtFilePicker(ft.FilePicker):
             elif file_path.suffix == ".txt":
                 picked_txt_path_list.append(file_path)
 
-        if self.is_wav_txt_path_pair_picked(picked_wav_path_list, picked_txt_path_list):
-            self.picked_wav_path_list = picked_wav_path_list
-            self.picked_txt_path_list = picked_txt_path_list
+        if not self.is_wav_txt_path_pair_picked(picked_wav_path_list, picked_txt_path_list):
+            self.selected_file_container.selected_file_list.controls = [
+                NO_FILE_SELECTED_TEXT
+            ]
+            self.page.update()
+            return
+
+        self.picked_wav_path_list = picked_wav_path_list
+        self.picked_txt_path_list = picked_txt_path_list
+
+        showing_file_list = []
+        for idx, wav_path in enumerate(picked_wav_path_list):
+            showing_file_list.append(ft.Text(
+                f"・ [{idx:03}] {wav_path.name} - {wav_path.stem}.txt",
+                theme_style=ft.TextThemeStyle.LABEL_LARGE
+            ))
+        self.selected_file_container.selected_file_list.controls = showing_file_list
+        self.page.update()
 
 class WavTxtFileManager(ft.Column):
     def __init__(self, annotator: FluencyFeatureAnnotator):
@@ -60,7 +105,8 @@ class WavTxtFileManager(ft.Column):
 
         self.annotator = annotator
 
-        self.pick_file_dialog = WavTxtFilePicker()
+        self.selected_file_container = SelectedFileContainer()
+        self.pick_file_dialog = WavTxtFilePicker(self.selected_file_container)
 
         self.save_file_dialog = ft.FilePicker(
             on_result= lambda e: self.annotate(
@@ -98,6 +144,7 @@ class WavTxtFileManager(ft.Column):
                 self.pick_file_dialog,
                 self.select_button
             ]),
+            self.selected_file_container,
             ft.Stack(controls=[
                 self.save_file_dialog,
                 self.annotate_button
