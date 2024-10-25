@@ -93,6 +93,10 @@ class WavTxtFilePicker(ft.FilePicker):
         self.page.close(self.file_selection_warning_banner)
 
     def close_error_banner(self, e):
+        self.selected_file_container.selected_file_list.controls.append(
+            NO_FILE_SELECTED_TEXT
+        )
+        self.page.update()
         self.page.close(self.general_error_banner)
 
     def is_wav_txt_path_pair_picked(
@@ -196,6 +200,7 @@ class WavTxtFileManager(ft.Column):
             )
         )
 
+        self.file_selection_warning_banner = FileSelectionWarningBanner(on_click=self.close_warning_banner)
         self.general_error_banner = GeneralErrorBanner(on_click=self.close_error_banner)
 
         self.progress_ring = ft.Container(
@@ -251,8 +256,16 @@ class WavTxtFileManager(ft.Column):
             ])
         ]
 
+    def close_warning_banner(self, e):
+        self.page.close(self.file_selection_warning_banner)
+
     def close_error_banner(self, e) -> None:
+        self.selected_file_container.selected_file_list.controls.append(
+            NO_FILE_SELECTED_TEXT
+        )
+        self.page.update()
         self.page.close(self.general_error_banner)
+        self.enable_control()
 
     def save_results(
         self,
@@ -274,6 +287,16 @@ class WavTxtFileManager(ft.Column):
 
         df_measures = pd.DataFrame(measure_list, columns=measure_names)
         df_measures.to_csv(save_csv_path, index=False)
+
+    def is_files_picked(
+        self,
+        picked_wav_file_path_list: List[Path],
+        picked_txt_file_path_list: List[Path]
+    ) -> bool:
+        if len(picked_wav_file_path_list) == 0 or len(picked_txt_file_path_list) == 0:
+            self.page.open(self.file_selection_warning_banner)
+            return False
+        return True
 
     def disable_control(self):
         self.select_button.disabled = True
@@ -313,6 +336,9 @@ class WavTxtFileManager(ft.Column):
         picked_wav_file_path_list: List[Path],
         picked_txt_file_path_list: List[Path]
     ) -> None:
+        if not self.is_files_picked(picked_wav_file_path_list, picked_txt_file_path_list):
+            return
+
         self.disable_control()
 
         try:
@@ -343,7 +369,7 @@ class WavTxtFileManager(ft.Column):
                 )
             )
 
-        self.enable_control()
+            self.enable_control()
 
 class AnnotatorLoadingProgressBar(ft.Row):
     def __init__(self):
