@@ -1,4 +1,5 @@
 from pathlib import Path
+from traceback import format_exc
 from typing import Callable, List
 
 import flet as ft
@@ -6,6 +7,11 @@ import pandas as pd
 from fluency_feature_annotator import FluencyFeatureAnnotator, TextGrid, Turn, save_grid, save_turn
 
 NO_FILE_SELECTED_TEXT = ft.Text("・ No files are selected.", theme_style=ft.TextThemeStyle.LABEL_LARGE)
+ERROR_SELECTED_TEXT = ft.Text(
+    "While processing files, unexpected error(s) occurred.\nPlease try it again or share the error message.",
+    theme_style=ft.TextThemeStyle.LABEL_LARGE,
+    color=ft.colors.ERROR
+)
 
 class SelectedFileContainer(ft.Container):
     def __init__(self):
@@ -44,6 +50,30 @@ class FileSelectionWarningBanner(ft.Banner):
         self.bgcolor = ft.colors.AMBER_100
         self.leading = ft.Icon(ft.icons.WARNING_AMBER_ROUNDED, color=ft.colors.AMBER, size=40)
 
+class GeneralErrorBanner(ft.Banner):
+    def __init__(self, on_click: Callable):
+        content = ft.Text(
+            value="Unexpected Error",
+            color=ft.colors.BLACK,
+        )
+        actions = [
+            ft.TextButton(text="Close", style=ft.ButtonStyle(color=ft.colors.PRIMARY), on_click=on_click)
+        ]
+
+        super().__init__(content=content, actions=actions)
+
+        self.bgcolor = ft.colors.ERROR_CONTAINER
+        self.leading = ft.Icon(ft.icons.WARNING, color=ft.colors.ERROR, size=40)
+
+    def update_error_message(self, error_message: str) -> None:
+        content = ft.Text(
+            value=error_message,
+            color=ft.colors.BLACK,
+            overflow=ft.TextOverflow.VISIBLE
+        )
+
+        self.content = content
+
 class WavTxtFilePicker(ft.FilePicker):
     def __init__(
         self,
@@ -56,10 +86,14 @@ class WavTxtFilePicker(ft.FilePicker):
         self.picked_txt_path_list = []
 
         self.selected_file_container = selected_file_container
-        self.file_selection_warning_banner = FileSelectionWarningBanner(on_click=self.close_banner)
+        self.file_selection_warning_banner = FileSelectionWarningBanner(on_click=self.close_warning_banner)
+        self.general_error_banner = GeneralErrorBanner(on_click=self.close_error_banner)
 
-    def close_banner(self, e):
+    def close_warning_banner(self, e):
         self.page.close(self.file_selection_warning_banner)
+
+    def close_error_banner(self, e):
+        self.page.close(self.general_error_banner)
 
     def is_wav_txt_path_pair_picked(
         self,
@@ -80,15 +114,18 @@ class WavTxtFilePicker(ft.FilePicker):
 
         return picked_wav_filename == picked_txt_filename
 
-    def pick_file_results(self, e: ft.FilePickerResultEvent) -> None:
+    def is_file_selected(self, e: ft.FilePickerResultEvent) -> None:
         if e is None:
             # ファイルが選択されなかった場合
             self.selected_file_container.selected_file_list.controls = [
                 NO_FILE_SELECTED_TEXT
             ]
             self.page.update()
-            return
+            return False
 
+        return True
+
+    def update_picked_files(self, e: ft.FilePickerResultEvent) -> None:
         picked_wav_path_list = []
         picked_txt_path_list = []
 
@@ -105,7 +142,7 @@ class WavTxtFilePicker(ft.FilePicker):
                 NO_FILE_SELECTED_TEXT
             ]
             self.page.update()
-            return
+            return False
 
         self.picked_wav_path_list = picked_wav_path_list
         self.picked_txt_path_list = picked_txt_path_list
@@ -118,6 +155,29 @@ class WavTxtFilePicker(ft.FilePicker):
             ))
         self.selected_file_container.selected_file_list.controls = showing_file_list
         self.page.update()
+
+        return True
+
+    def handle_exception(self, error_message: str) -> None:
+        self.general_error_banner.update_error_message(error_message)
+        self.picked_wav_path_list = []
+        self.picked_txt_path_list = []
+        self.selected_file_container.selected_file_list.controls = [
+            ERROR_SELECTED_TEXT
+        ]
+        self.page.open(self.general_error_banner)
+        self.page.update()
+
+    def pick_file_results(self, e: ft.FilePickerResultEvent) -> None:
+        try:
+            if not self.is_file_selected(e):
+                return
+
+            if not self.update_picked_files(e):
+                return
+        except Exception:
+            error_message = format_exc()
+            self.handle_exception(error_message)
 
 class WavTxtFileManager(ft.Column):
     def __init__(self, annotator: FluencyFeatureAnnotator):
@@ -135,6 +195,8 @@ class WavTxtFileManager(ft.Column):
                 self.pick_file_dialog.picked_txt_path_list
             )
         )
+
+        self.general_error_banner = GeneralErrorBanner(on_click=self.close_error_banner)
 
         self.progress_ring = ft.Container(
             width = 500,
@@ -189,6 +251,9 @@ class WavTxtFileManager(ft.Column):
             ])
         ]
 
+    def close_error_banner(self, e) -> None:
+        self.page.close(self.general_error_banner)
+
     def save_results(
         self,
         save_csv_path: str,
@@ -230,15 +295,17 @@ class WavTxtFileManager(ft.Column):
 
         self.progress_ring.visible = False
 
-        self.selected_file_container.selected_file_list.controls.append(
-            ft.Text(
-                "・ Annotation finished!",
-                theme_style=ft.TextThemeStyle.LABEL_LARGE,
-                color=ft.colors.LIGHT_GREEN
-            )
-        )
-
         self.update()
+
+    def handle_exception(self, error_message: str) -> None:
+        self.general_error_banner.update_error_message(error_message)
+        self.pick_file_dialog.picked_wav_path_list = []
+        self.pick_file_dialog.picked_txt_path_list = []
+        self.selected_file_container.selected_file_list.controls = [
+            ERROR_SELECTED_TEXT
+        ]
+        self.page.open(self.general_error_banner)
+        self.page.update()
 
     def annotate(
         self,
@@ -248,21 +315,33 @@ class WavTxtFileManager(ft.Column):
     ) -> None:
         self.disable_control()
 
-        turn_list, grid_list = self.annotator.annotate(
-            picked_wav_file_path_list,
-            picked_txt_file_path_list
-        )
+        try:
+            turn_list, grid_list = self.annotator.annotate(
+                picked_wav_file_path_list,
+                picked_txt_file_path_list
+            )
 
-        measure_list, measure_names = self.annotator.extract(turn_list, grid_list)
+            measure_list, measure_names = self.annotator.extract(turn_list, grid_list)
 
-        self.save_results(
-            e.path,
-            picked_wav_file_path_list,
-            turn_list,
-            grid_list,
-            measure_list,
-            measure_names
-        )
+            self.save_results(
+                e.path,
+                picked_wav_file_path_list,
+                turn_list,
+                grid_list,
+                measure_list,
+                measure_names
+            )
+        except Exception:
+            error_message = format_exc()
+            self.handle_exception(error_message)
+        else:
+            self.selected_file_container.selected_file_list.controls.append(
+                ft.Text(
+                    "・ Annotation finished!",
+                    theme_style=ft.TextThemeStyle.LABEL_LARGE,
+                    color=ft.colors.LIGHT_GREEN
+                )
+            )
 
         self.enable_control()
 
@@ -288,13 +367,24 @@ class AnnotatorLoadingProgressBar(ft.Row):
         self.alignment = ft.MainAxisAlignment.CENTER
 
 def main(page: ft.Page):
+    page.scroll = "adaptive"
+
+    general_error_banner = GeneralErrorBanner(
+        lambda e: page.close(general_error_banner)
+    )
+
     annotator_loading_progress_bar = AnnotatorLoadingProgressBar()
     page.add(annotator_loading_progress_bar)
 
-    annotator = FluencyFeatureAnnotator()
-
-    page.remove(annotator_loading_progress_bar)
-    page.add(WavTxtFileManager(annotator))
+    try:
+        annotator = FluencyFeatureAnnotator()
+    except Exception:
+        error_message = format_exc()
+        general_error_banner.update_error_message(error_message)
+        page.open(general_error_banner)
+    else:
+        page.remove(annotator_loading_progress_bar)
+        page.add(WavTxtFileManager(annotator))
 
 
 ft.app(main)

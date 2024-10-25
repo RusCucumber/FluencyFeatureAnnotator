@@ -1,5 +1,4 @@
 from pathlib import Path
-from traceback import format_exc
 from typing import Generator, List, Tuple, Union
 
 import pandas as pd
@@ -107,25 +106,15 @@ class FluencyFeatureAnnotator:
             with open(txt_file_path, "r") as f:
                 transcript = f.readline()
 
-            try:
-                df_fa = self.fa.align(wav_file_path, transcript)
-                rev_transcript = df_2_rev(df_fa)
-                rev_transcript = Transcript.from_json(rev_transcript)
-            except Exception:
-                print(format_exc())
-                return
+            df_fa = self.fa.align(wav_file_path, transcript)
+            rev_transcript = df_2_rev(df_fa)
+            rev_transcript = Transcript.from_json(rev_transcript)
 
             df_transcript, filler_location = self.preprocess_for_turn(rev_transcript)
             turn = self.df_2_turn(df_transcript, filler_location)
 
             turn.ignore_disfluency()
-
-            try:
-                turn = self.annotator(turn=turn)
-            except Exception:
-                print(format_exc())
-                return
-
+            turn = self.annotator(turn=turn)
             turn.show_disfluency()
 
             pauses = self.find_pauses(turn)
