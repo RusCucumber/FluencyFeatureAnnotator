@@ -1,4 +1,5 @@
-setuptools-rust==1.10.2
+pip==24.2
+flet==0.24.1
 absl-py==2.1.0
 aiohappyeyeballs==2.4.3
 aiohttp==3.10.9
@@ -42,9 +43,6 @@ executing==2.1.0
 fastapi==0.114.0
 fastjsonschema==2.20.0
 filelock==3.16.1
-flet==0.24.1
-flet-core==0.24.1
-flet-runtime==0.24.1
 fqdn==1.5.1
 frozenlist==1.4.1
 fsspec==2024.9.0
@@ -199,3 +197,4 @@ widgetsnbextension==4.0.13
 wrapt==1.16.0
 yarl==1.13.1
 zipp==3.20.2
+tokenizers==0.11.6
