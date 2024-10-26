@@ -189,7 +189,7 @@ wcwidth==0.2.13
 weasel==0.4.1
 webcolors==24.8.0
 webencodings==0.5.1
-webrtcvad==2.0.10
+webrtcvad-wheels==2.0.14
 websocket-client==0.59.0
 websockets==13.0.1
 Werkzeug==2.0.3
