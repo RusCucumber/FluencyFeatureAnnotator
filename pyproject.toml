@@ -37,6 +37,7 @@ dependencies = [
     "tokenizers==0.11.6",
     "en-ud-l1l2e-combined-trf @ file:///Users/ryuki/Development/FluencyFeatureAnnotator/src/fluencyfeatureannotator/modules/resources/en_ud_L1L2e_combined_trf-0.0.1",
     "flet>=0.24.1",
+    "webrtcvad-wheels==2.0.14",
 ]
 readme = "README.md"
 requires-python = ">= 3.8"

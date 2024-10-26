@@ -623,6 +623,8 @@ webencodings==0.5.1
     # via tinycss2
 webrtcvad==2.0.10
     # via fluencyfeatureannotator
+webrtcvad-wheels==2.0.14
+    # via fluencyfeatureannotator
 websocket-client==0.59.0
     # via jupyter-server
     # via rev-ai
