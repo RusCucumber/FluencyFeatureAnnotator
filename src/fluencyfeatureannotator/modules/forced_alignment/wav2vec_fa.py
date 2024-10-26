@@ -99,7 +99,7 @@ class Wav2VecCTCFA:
         waveform, sample_rate = self.load_audio(audio_file_path)
         waveform = self.resample(waveform, sample_rate)
 
-        cleaned_text = text #self.preprocess_text(text)
+        cleaned_text = self.preprocess_text(text)
         tokens = self.tokenize(cleaned_text)
 
         return waveform, tokens, cleaned_text
