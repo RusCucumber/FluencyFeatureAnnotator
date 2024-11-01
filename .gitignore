@@ -17,3 +17,4 @@ wheels/
 *.ckpt
 stanza_resources
 en_ud_L1L2e_combined_trf-0.0.1
+.DS_Store
