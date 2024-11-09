@@ -92,7 +92,6 @@ defusedxml==0.7.1
 distance==0.1.3
     # via g2p-en
 en-ud-l1l2e-combined-trf @ file:///Users/ryuki/Development/FluencyFeatureAnnotator/src/fluencyfeatureannotator/modules/resources/en_ud_L1L2e_combined_trf-0.0.1
-    # via fluencyfeatureannotator
 exceptiongroup==1.2.2
     # via anyio
     # via ipython
