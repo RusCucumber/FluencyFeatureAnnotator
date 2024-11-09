@@ -1,3 +1,4 @@
+import os
 from pathlib import Path
 from traceback import format_exc
 from typing import Callable, List
@@ -12,6 +13,8 @@ ERROR_SELECTED_TEXT = ft.Text(
     theme_style=ft.TextThemeStyle.LABEL_LARGE,
     color=ft.colors.ERROR
 )
+
+os.environ["FLET_SECRET_KEY"] = os.urandom(12).hex()
 
 class SelectedFileContainer(ft.Container):
     def __init__(self):
@@ -74,18 +77,37 @@ class GeneralErrorBanner(ft.Banner):
 
         self.content = content
 
+class UploadedFileProgressbar(ft.Column):
+    def __init__(self):
+        super().__init__()
+
+        self.file_name = ft.Text("", theme_style=ft.TextThemeStyle.LABEL_LARGE)
+        self.progress_bar = ft.ProgressBar(value=0, width=300)
+
+        self.controls = [self.file_name, self.progress_bar]
+
+    def update_bar(self, text: str, rate: float) -> None:
+        self.file_name.value = text
+        self.progress_bar.value = rate
+
+        self.update()
+
+
 class WavTxtFilePicker(ft.FilePicker):
     def __init__(
         self,
-        selected_file_container: SelectedFileContainer
+        selected_file_container: SelectedFileContainer,
+        uploaded_file_progressbar: UploadedFileProgressbar
     ):
         super().__init__()
 
         self.on_result = self.pick_file_results
+        self.on_upload = self.upload_file_progress
         self.picked_wav_path_list = []
         self.picked_txt_path_list = []
 
         self.selected_file_container = selected_file_container
+        self.uploaded_file_progressbar = uploaded_file_progressbar
         self.file_selection_warning_banner = FileSelectionWarningBanner(on_click=self.close_warning_banner)
         self.general_error_banner = GeneralErrorBanner(on_click=self.close_error_banner)
 
@@ -134,11 +156,11 @@ class WavTxtFilePicker(ft.FilePicker):
         picked_txt_path_list = []
 
         for file in e.files:
-            file_path = Path(file.path)
-            if file_path.suffix == ".wav":
-                picked_wav_path_list.append(file_path)
-            elif file_path.suffix == ".txt":
-                picked_txt_path_list.append(file_path)
+            file_name = Path(file.name)
+            if file_name.suffix == ".wav":
+                picked_wav_path_list.append(file_name)
+            elif file_name.suffix == ".txt":
+                picked_txt_path_list.append(file_name)
 
         if not self.is_wav_txt_path_pair_picked(picked_wav_path_list, picked_txt_path_list):
             self.page.open(self.file_selection_warning_banner)
@@ -157,6 +179,7 @@ class WavTxtFilePicker(ft.FilePicker):
                 f"・ [{idx:03}] {wav_path.name} - {wav_path.stem}.txt",
                 theme_style=ft.TextThemeStyle.LABEL_LARGE
             ))
+        showing_file_list.append(self.uploaded_file_progressbar)
         self.selected_file_container.selected_file_list.controls = showing_file_list
         self.page.update()
 
@@ -183,6 +206,19 @@ class WavTxtFilePicker(ft.FilePicker):
             error_message = format_exc()
             self.handle_exception(error_message)
 
+    def upload_file_progress(self, e: ft.FilePickerUploadEvent) -> None:
+        message = f"Uploading {e.file_name}... [{int(e.progress * 100)}%]"
+
+        if e.progress == 1:
+            message = f"Upload completed! [{int(e.progress * 100)}%]"
+
+        print(message)
+
+        self.uploaded_file_progressbar.update_bar(message, e.progress)
+
+        self.update()
+
+
 class WavTxtFileManager(ft.Column):
     def __init__(self, annotator: FluencyFeatureAnnotator):
         super().__init__()
@@ -190,7 +226,11 @@ class WavTxtFileManager(ft.Column):
         self.annotator = annotator
 
         self.selected_file_container = SelectedFileContainer()
-        self.pick_file_dialog = WavTxtFilePicker(self.selected_file_container)
+        self.uploaded_progresbar = UploadedFileProgressbar()
+        self.pick_file_dialog = WavTxtFilePicker(
+            self.selected_file_container,
+            self.uploaded_progresbar
+        )
 
         self.save_file_dialog = ft.FilePicker(
             on_result= lambda e: self.annotate(
@@ -223,11 +263,18 @@ class WavTxtFileManager(ft.Column):
 
         self.select_button = ft.ElevatedButton(
             text="Select wav & txt files",
-            icon=ft.icons.UPLOAD_FILE,
+            icon=ft.icons.FOLDER_OPEN,
             on_click=lambda _: self.pick_file_dialog.pick_files(
                 allow_multiple=True,
                 allowed_extensions=["wav", "txt"]
             ),
+            width=300
+        )
+
+        self.upload_button = ft.ElevatedButton(
+            text="Upload wav & txt files",
+            icon=ft.icons.UPLOAD_FILE,
+            on_click=self.upload_files,
             width=300
         )
 
@@ -246,6 +293,7 @@ class WavTxtFileManager(ft.Column):
                 self.pick_file_dialog,
                 self.select_button
             ]),
+            self.upload_button,
             ft.Stack(controls=[
                 self.selected_file_container,
                 self.progress_ring
@@ -266,6 +314,30 @@ class WavTxtFileManager(ft.Column):
         self.page.update()
         self.page.close(self.general_error_banner)
         self.enable_control()
+
+    def upload_files(self, e) -> None:
+        uf = []
+        txt_path_list = self.pick_file_dialog.picked_txt_path_list
+        wav_path_list = self.pick_file_dialog.picked_wav_path_list
+        for txt_path, wav_path in zip(txt_path_list, wav_path_list):
+            txt_filename = txt_path.name
+            wav_filename = wav_path.name
+
+            uf.append(
+                ft.FilePickerUploadFile(
+                    txt_filename,
+                    upload_url=self.page.get_upload_url(txt_filename, 600)
+                )
+            )
+            uf.append(
+                ft.FilePickerUploadFile(
+                    wav_filename,
+                    upload_url=self.page.get_upload_url(wav_filename, 600)
+                )
+            )
+
+        print(uf)
+        self.pick_file_dialog.upload(uf)
 
     def save_results(
         self,
@@ -413,4 +485,4 @@ def main(page: ft.Page):
         page.add(WavTxtFileManager(annotator))
 
 
-ft.app(main)
+app = ft.app(main, upload_dir="uploads")

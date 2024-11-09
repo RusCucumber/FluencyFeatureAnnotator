@@ -98,7 +98,7 @@ exceptiongroup==1.2.2
     # via ipython
 executing==2.1.0
     # via stack-data
-fastapi==0.115.3
+fastapi==0.115.4
     # via flet
 fastjsonschema==2.20.0
     # via nbformat
