@@ -13,6 +13,8 @@ ERROR_SELECTED_TEXT = ft.Text(
     theme_style=ft.TextThemeStyle.LABEL_LARGE,
     color=ft.colors.ERROR
 )
+UPLOAD_DIR = Path("uploads")
+RESULT_CSV_PATH = Path("results/result.csv")
 
 os.environ["FLET_SECRET_KEY"] = os.urandom(12).hex()
 
@@ -156,11 +158,11 @@ class WavTxtFilePicker(ft.FilePicker):
         picked_txt_path_list = []
 
         for file in e.files:
-            file_name = Path(file.name)
-            if file_name.suffix == ".wav":
-                picked_wav_path_list.append(file_name)
-            elif file_name.suffix == ".txt":
-                picked_txt_path_list.append(file_name)
+            file_name = file.name
+            if file_name.endswith(".wav"):
+                picked_wav_path_list.append(UPLOAD_DIR / file_name)
+            elif file_name.endswith(".txt"):
+                picked_txt_path_list.append(UPLOAD_DIR / file_name)
 
         if not self.is_wav_txt_path_pair_picked(picked_wav_path_list, picked_txt_path_list):
             self.page.open(self.file_selection_warning_banner)
@@ -232,14 +234,6 @@ class WavTxtFileManager(ft.Column):
             self.uploaded_progresbar
         )
 
-        self.save_file_dialog = ft.FilePicker(
-            on_result= lambda e: self.annotate(
-                e,
-                self.pick_file_dialog.picked_wav_path_list,
-                self.pick_file_dialog.picked_txt_path_list
-            )
-        )
-
         self.file_selection_warning_banner = FileSelectionWarningBanner(on_click=self.close_warning_banner)
         self.general_error_banner = GeneralErrorBanner(on_click=self.close_error_banner)
 
@@ -262,7 +256,7 @@ class WavTxtFileManager(ft.Column):
         )
 
         self.select_button = ft.ElevatedButton(
-            text="Select wav & txt files",
+            text="① Select wav & txt files",
             icon=ft.icons.FOLDER_OPEN,
             on_click=lambda _: self.pick_file_dialog.pick_files(
                 allow_multiple=True,
@@ -272,18 +266,18 @@ class WavTxtFileManager(ft.Column):
         )
 
         self.upload_button = ft.ElevatedButton(
-            text="Upload wav & txt files",
+            text="② Upload wav & txt files",
             icon=ft.icons.UPLOAD_FILE,
             on_click=self.upload_files,
             width=300
         )
 
         self.annotate_button = ft.FilledButton(
-            text="Annotate fluency features",
+            text="③ Annotate fluency features",
             icon=ft.icons.MULTITRACK_AUDIO_ROUNDED,
-            on_click=lambda _: self.save_file_dialog.save_file(
-                file_name="result.csv",
-                allowed_extensions=["csv"]
+            on_click=lambda _: self.annotate(
+                self.pick_file_dialog.picked_wav_path_list,
+                self.pick_file_dialog.picked_txt_path_list
             ),
             width=300
         )
@@ -298,10 +292,7 @@ class WavTxtFileManager(ft.Column):
                 self.selected_file_container,
                 self.progress_ring
             ]),
-            ft.Stack(controls=[
-                self.save_file_dialog,
-                self.annotate_button
-            ])
+            self.annotate_button
         ]
 
     def close_warning_banner(self, e):
@@ -374,6 +365,9 @@ class WavTxtFileManager(ft.Column):
         self.select_button.disabled = True
         self.select_button.style = ft.ButtonStyle(color="#eeeeee")
 
+        self.upload_button.disabled = True
+        self.upload_button.style = ft.ButtonStyle(color="#eeeeee")
+
         self.annotate_button.disabled = True
         self.annotate_button.style = ft.ButtonStyle(bgcolor="#eeeeee")
 
@@ -384,6 +378,9 @@ class WavTxtFileManager(ft.Column):
     def enable_control(self):
         self.select_button.disabled = False
         self.select_button.style = ft.ButtonStyle(color=ft.colors.PRIMARY)
+
+        self.upload_button.disabled = False
+        self.upload_button.style = ft.ButtonStyle(color=ft.colors.PRIMARY)
 
         self.annotate_button.disabled = False
         self.annotate_button.style = ft.ButtonStyle(bgcolor=ft.colors.PRIMARY)
@@ -404,7 +401,6 @@ class WavTxtFileManager(ft.Column):
 
     def annotate(
         self,
-        e: ft.FilePickerResultEvent,
         picked_wav_file_path_list: List[Path],
         picked_txt_file_path_list: List[Path]
     ) -> None:
@@ -419,10 +415,10 @@ class WavTxtFileManager(ft.Column):
                 picked_txt_file_path_list
             )
 
-            measure_list, measure_names = self.annotator.extract(turn_list, grid_list)
+            measure_list, measure_names = self.annotator.extract(picked_wav_file_path_list, turn_list, grid_list)
 
             self.save_results(
-                e.path,
+                RESULT_CSV_PATH,
                 picked_wav_file_path_list,
                 turn_list,
                 grid_list,
@@ -436,6 +432,13 @@ class WavTxtFileManager(ft.Column):
             self.selected_file_container.selected_file_list.controls.append(
                 ft.Text(
                     "・ Annotation finished!",
+                    theme_style=ft.TextThemeStyle.LABEL_LARGE,
+                    color=ft.colors.LIGHT_GREEN
+                )
+            )
+            self.selected_file_container.selected_file_list.controls.append(
+                ft.Text(
+                    "・ See Donwloads folder",
                     theme_style=ft.TextThemeStyle.LABEL_LARGE,
                     color=ft.colors.LIGHT_GREEN
                 )
