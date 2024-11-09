@@ -1,4 +1,5 @@
 import os
+import shutil
 from pathlib import Path
 from traceback import format_exc
 from typing import Callable, List
@@ -479,6 +480,9 @@ def main(page: ft.Page):
 
     try:
         annotator = FluencyFeatureAnnotator()
+        shutil.rmtree(UPLOAD_DIR)
+        UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
+        print("Uploads directory initialized")
     except Exception:
         error_message = format_exc()
         general_error_banner.update_error_message(error_message)
