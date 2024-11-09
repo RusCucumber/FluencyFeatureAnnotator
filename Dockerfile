@@ -12,6 +12,7 @@ RUN apt-get install -y \
     libgstreamer-plugins-base1.0-0 \
     mpv \
     libmpv-dev \
+    zenity \
     && rm -rf /var/lib/apt/lists/*
 
 RUN pip install uv
