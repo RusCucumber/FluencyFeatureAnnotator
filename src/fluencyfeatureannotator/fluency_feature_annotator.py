@@ -125,13 +125,18 @@ class FluencyFeatureAnnotator:
 
         return turn_list, grid_list
 
-    def extract(self, turn_list: List[Turn], grid_list: List[TextGrid]) -> Tuple[List[List[float]], List[str]]:
+    def extract(
+            self,
+            wav_file_path_list: List[Path],
+            turn_list: List[Turn],
+            grid_list: List[TextGrid]
+        ) -> Tuple[List[List[float]], List[str]]:
         measure_list = []
-        for turn, grid in zip(turn_list, grid_list):
+        for wav_path, turn, grid in zip(wav_file_path_list, turn_list, grid_list):
             measures = self.extractor.extract_by_turn(turn, grid)
-            measure_list.append(measures)
+            measure_list.append([wav_path.stem] + measures)
 
-        measure_names = self.extractor.check_feature_names()
+        measure_names = ["filename"] + self.extractor.check_feature_names()
 
         return measure_list, measure_names
 
