@@ -26,5 +26,5 @@ RUN uv pip install --no-cache --system -r requirements.lock
 COPY src .
 RUN uv pip install --no-cache --system fluencyfeatureannotator/modules/resources/en_ud_L1L2e_combined_trf-0.0.1
 
-# CMD python fluencyfeatureannotator/main.py
-CMD flet run fluencyfeatureannotator -p 8001
+WORKDIR /app/fluencyfeatureannotator
+CMD flet run --web -p 8001
