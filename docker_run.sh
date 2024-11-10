@@ -1,0 +1,1 @@
+docker run -d -p 8001:8001 -v ~/Downloads:/app/fluencyfeatureannotator/results -it --name ffa fluency-feature-annotator
