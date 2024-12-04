@@ -92,3 +92,4 @@ class PauseLocationDetector(ModuleBase):
             return SileroVAD(**vad_config)
 
         raise ValueError("Currently \"praat\", \"webrtc\" and \"silero\" are supported VAD")
+

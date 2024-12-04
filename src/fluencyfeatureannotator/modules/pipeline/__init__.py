@@ -4,3 +4,4 @@ from modules.pipeline.pause_location_detector import PauseLocationDetector  # no
 from modules.pipeline.pipeline import Annotator  # noqa: F401
 from modules.pipeline.pruning import Pruning  # noqa: F401
 from modules.pipeline.sentence_end_detector import SentenceEndDetector  # noqa: F401
+

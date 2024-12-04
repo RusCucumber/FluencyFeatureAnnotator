@@ -295,3 +295,4 @@ class StanzaClauseDetector(ModuleBase):
             doc_clause_ids.append(sentence_clause_ids)
 
         return doc_clause_ids
+

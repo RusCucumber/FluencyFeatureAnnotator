@@ -20,3 +20,4 @@ class ModuleBase:
     def _turn_type_checker(self, turn: Turn) -> Any:
         if not isinstance(turn, Turn):
             raise ValueError(f"turn must be {Turn}")
+

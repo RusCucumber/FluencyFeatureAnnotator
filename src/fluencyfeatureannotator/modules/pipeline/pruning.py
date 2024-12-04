@@ -105,3 +105,4 @@ class Pruning(ModuleBase):
             disfluency_type = DisfluencyEnum.SELF_REPAIR
 
         return [disfluency_type for _ in indices]
+

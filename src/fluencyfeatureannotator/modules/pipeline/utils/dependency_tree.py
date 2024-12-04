@@ -164,3 +164,4 @@ class DependencyTree:
         children_id = np.where(children_candidates > 0)[0]
 
         return children_id
+

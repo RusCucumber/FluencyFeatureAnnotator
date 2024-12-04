@@ -173,3 +173,4 @@ class SemanticGraph:
         graph.graph = list_like_obj
 
         return graph
+

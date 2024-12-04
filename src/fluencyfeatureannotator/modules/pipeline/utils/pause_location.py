@@ -7,3 +7,4 @@ class PauseLocation(Enum):
     BEFORE_TURN = auto()
     AFTER_TURN = auto()
     CLAUSE_COVERED = auto()
+

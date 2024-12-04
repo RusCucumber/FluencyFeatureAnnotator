@@ -276,3 +276,4 @@ class Annotator:
 
         with open(textgrid_path, "w") as f:
             f.writelines(grid)
+

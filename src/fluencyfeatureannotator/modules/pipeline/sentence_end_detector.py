@@ -37,3 +37,4 @@ class SentenceEndDetector(ModuleBase):
         turn.separate_clause(0, indices)
 
         return turn
+

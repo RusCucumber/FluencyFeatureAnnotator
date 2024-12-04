@@ -35,3 +35,4 @@ class ASR(ModuleBase):
         turn = Turn.from_google_asr_words(results["words"], 0)
 
         return turn
+
