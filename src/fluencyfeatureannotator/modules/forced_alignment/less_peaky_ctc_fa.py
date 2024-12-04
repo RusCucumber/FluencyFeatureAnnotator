@@ -190,3 +190,4 @@ class LessPeakyCTCFA:
             )
 
         return df_fa
+

@@ -329,4 +329,3 @@ def tdnn_blstm_ctc_model_base(num_symbols):
             ("ffn", 5),
         ]
     )
-

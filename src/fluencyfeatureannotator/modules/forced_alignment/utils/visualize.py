@@ -52,3 +52,4 @@ def plot_scores(word_spans, scores, tokenizer):
     ax.grid(True, axis="y")
     ax.axhline(0, color="black")
     fig.tight_layout()
+

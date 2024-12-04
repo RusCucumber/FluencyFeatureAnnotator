@@ -149,3 +149,4 @@ class Wav2VecCTCFA:
         df_timestamp = self.to_dataframe(token_spans, cleaned_text, ratio, self.bundle.sample_rate)
 
         return df_timestamp
+

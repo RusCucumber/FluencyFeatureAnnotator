@@ -195,3 +195,4 @@ class CTCLossWithLabelPriors(nn.Module):
         )
 
         return loss
+
