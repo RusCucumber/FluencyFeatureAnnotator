@@ -23,3 +23,4 @@ class DisfluencyPredictorRoberta(RobertaTokenClassifierBase):
             return super().from_finetuned(FINETUED_DISFLUENCY_PREDICTOR_ROBERTA_L1, device=device)
 
         return super().from_finetuned(FINETUED_DISFLUENCY_PREDICTOR_ROBERTA, device=device)
+

@@ -15,3 +15,4 @@ class PunctuationPredictor(DistilBertTokenClassifierBase):
     def preprocess_predict(self, text: str) -> np.ndarray:
         text = [text]
         return super().preprocess_predict(text)
+

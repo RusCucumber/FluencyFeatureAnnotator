@@ -54,3 +54,4 @@ class SpacyDependencyParser:
     def predict(self, text: str) -> spacy.tokens.doc.Doc:
         doc = self.__nlp(text)
         return doc
+

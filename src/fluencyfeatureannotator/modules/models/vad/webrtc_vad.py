@@ -162,3 +162,4 @@ class WebRTCVAD:
             yield chunk, ts
             audio = audio[self.__stride:]
             n_chunk += 1
+

@@ -311,3 +311,4 @@ class RobertaTokenClassifierBase:
     def preprocess_predict(self, text: List[Union[str, List[str]]]) -> List[np.ndarray]:
         input_ids, attention_mask, tags = self.preprocess(text)
         return self.predict(input_ids, attention_mask, tags)
+

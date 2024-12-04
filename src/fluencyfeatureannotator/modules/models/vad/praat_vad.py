@@ -85,3 +85,4 @@ class PraatVAD:
                 interval_list.append((begin, idx))
 
         return interval_list
+

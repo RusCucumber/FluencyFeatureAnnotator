@@ -86,4 +86,3 @@ class SileroVAD:
             silence_timestamp.append((ts1[1], ts2[0]))
 
         return silence_timestamp
-

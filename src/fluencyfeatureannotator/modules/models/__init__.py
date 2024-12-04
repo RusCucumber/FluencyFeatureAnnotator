@@ -16,3 +16,4 @@ from modules.models.punctuation_predictor.punctuation_predictor import (
 from modules.models.vad.praat_vad import PraatVAD  # noqa: F401
 from modules.models.vad.silero_vad import SileroVAD  # noqa: F401
 from modules.models.vad.webrtc_vad import WebRTCVAD  # noqa: F401
+

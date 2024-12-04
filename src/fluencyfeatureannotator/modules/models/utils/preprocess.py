@@ -107,3 +107,4 @@ class RobertaPreprocess:
         tags = self.generate_ignore_tags(offset_mapping)
 
         return input_ids, attention_mask, tags
+

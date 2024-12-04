@@ -101,3 +101,4 @@ class GoogleTranscriptGenerator:
 
         results["transcript"] = " ".join(results["transcript"])
         return results
+
