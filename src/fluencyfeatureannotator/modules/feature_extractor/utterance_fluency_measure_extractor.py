@@ -297,3 +297,4 @@ class UtteranceFluencyMeasureExtractor:
         if y == 0:
             return np.nan
         return x / y
+
