@@ -71,3 +71,4 @@ class GCSBucket:
             uri = f"gs://{self.__bucket.name}/{blob.name}"
 
             yield uri
+

@@ -96,3 +96,4 @@ class Base:
 
     def show_info(self) -> None:
         print(repr(self))
+

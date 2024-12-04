@@ -219,3 +219,4 @@ if __name__ == "__main__":
     clause_3 = clause_2.split_words(7)
     clause_2.show_info()
     clause_3.show_info()
+

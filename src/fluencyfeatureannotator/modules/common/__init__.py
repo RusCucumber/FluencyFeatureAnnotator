@@ -8,3 +8,4 @@ from modules.common.word import DisfluencyEnum, DisfluencyWord, Word  # noqa: F4
 RESOURCES_PATH = Path.cwd() / "src/fluencyfeatureannotator/modules/resources"
 if not RESOURCES_PATH.exists():
     RESOURCES_PATH = Path(__file__).parents[2] / "modules/resources"
+
