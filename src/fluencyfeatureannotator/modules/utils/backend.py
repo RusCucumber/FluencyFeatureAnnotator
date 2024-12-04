@@ -19,3 +19,4 @@ def check_file(file: FileStorage, extentions: list) -> Union[bool, str]:
         return True, "OK"
 
     return False, f"file extention must be \"{', '.join(extentions)}\", \"{extention}\" not allowed"
+
