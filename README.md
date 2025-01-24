@@ -1,5 +1,7 @@
 # Oral Fluency Feature Annotation System
 
+[![CC BY-NC 4.0][cc-by-nc-shield]][cc-by-nc]
+
 Oral fluency feature annotation system is a open-source program which allows users to detect temporal speech features, including disfluency words (e.g., repetitions, self-repairs, & false starts) and pause locations (i.e., mid- & end-clause pauses) and calculate utterance fluency measures (See [Matsuura et al. (2025)](https://doi.org/10.1016/j.rmal.2024.100177) for more detailed information). Python scripts of the system are available here.
 
 ## Installation
@@ -53,3 +55,12 @@ Please cite the following thesis in your paper.
 - If you input long audio files (e.g., long than 3 mins), the current version of the system may stop automatic annotation due to a memory issue.
 - If you would like to use raw python scripts with pre-trained parameters, please contact at rmatsuur[at]andrew.cmu.edu
 - If you find any issues, please contact at rmatsuur[at]andrew.cmu.edu or add issues in this repository.
+
+This work is licensed under a
+[Creative Commons Attribution-NonCommercial 4.0 International License][cc-by-nc].
+
+[![CC BY-NC 4.0][cc-by-nc-image]][cc-by-nc]
+
+[cc-by-nc]: https://creativecommons.org/licenses/by-nc/4.0/
+[cc-by-nc-image]: https://licensebuttons.net/l/by-nc/4.0/88x31.png
+[cc-by-nc-shield]: https://img.shields.io/badge/License-CC%20BY--NC%204.0-lightgrey.svg
