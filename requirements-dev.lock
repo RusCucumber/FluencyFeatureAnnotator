@@ -279,6 +279,9 @@ murmurhash==1.0.10
     # via preshed
     # via spacy
     # via thinc
+mypy==1.14.1
+mypy-extensions==1.0.0
+    # via mypy
 nbclient==0.10.0
     # via nbconvert
 nbconvert==7.16.4
@@ -534,6 +537,7 @@ tokenizers==0.11.6
     # via transformers
 tomli==2.0.2
     # via jupyterlab
+    # via mypy
 torch==2.4.1
     # via fluencyfeatureannotator
     # via spacy-transformers
@@ -585,6 +589,7 @@ typing-extensions==4.12.2
     # via fastapi
     # via huggingface-hub
     # via ipython
+    # via mypy
     # via pydantic
     # via pydantic-core
     # via qrcode

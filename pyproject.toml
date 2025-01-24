@@ -49,6 +49,7 @@ managed = true
 dev-dependencies = [
     "ruff>=0.6.4",
     "en-ud-l1l2e-combined-trf @ file:///Users/ryuki/Development/FluencyFeatureAnnotator/src/fluencyfeatureannotator/modules/resources/en_ud_L1L2e_combined_trf-0.0.1",
+    "mypy>=1.14.1",
 ]
 
 [tool.hatch.metadata]
