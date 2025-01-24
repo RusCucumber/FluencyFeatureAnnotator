@@ -7,7 +7,6 @@
 ※ バッチ処理はひとまず考えないでOK
 """
 
-import re
 import sys
 from pathlib import Path
 from typing import List, Tuple, Union
@@ -19,18 +18,13 @@ import torchaudio.functional as F
 
 CWD = Path(__file__).parent
 sys.path.append(
-    str(CWD / "utils")
+    str(CWD)
 )
 
-from text.cleaners import english_cleaners
+from text_transformer import text_postprocess, text_preprocess
 
 PRETRAINED_MODEL_PATH = CWD / Path("checkpoint/epoch=9-step=65369.ckpt")
 NORMALIZATION_PARAMETER_PATH = CWD / Path("resources/global_stats.json")
-
-PUNCTUATIONS = [
-    ".", ",", "!", "?", "[", "]", "(", ")",
-    "{", "}", "'", "\"", "/", "<", ">"
-]
 
 TARGET_CHANNEL = 0
 
@@ -59,32 +53,6 @@ class Wav2VecCTCFA:
         transformed_waveform = torchaudio.transforms.Resample(sample_rate, target_sample_rate)(transformed_waveform)
         return transformed_waveform
 
-    def preprocess_text(self, text: str) -> str:
-        percents_pattern = r"(\d{2})%"
-        cleaned_text = re.sub(
-            percents_pattern, r"\1 percents", text
-        )
-
-        if "1%" in cleaned_text:
-            cleaned_text = cleaned_text.replace("1%", "1 percent")
-        if "%" in cleaned_text:
-            cleaned_text = cleaned_text.replace("%", " percents")
-
-        cleaned_text = english_cleaners(cleaned_text)
-
-        for punctuation in PUNCTUATIONS:
-            cleaned_text = cleaned_text.replace(punctuation, "")
-
-        and_pattern = r"(\w)&(\w)"
-        cleaned_text = re.sub(
-            and_pattern, r"\1 & \2", cleaned_text
-        )
-
-        if "&" in cleaned_text:
-            cleaned_text = cleaned_text.replace("&", "and")
-
-        return cleaned_text
-
     def tokenize(self, transcript: str) -> List[str]:
         dictionary = self.bundle.get_dict()
 
@@ -99,7 +67,7 @@ class Wav2VecCTCFA:
         waveform, sample_rate = self.load_audio(audio_file_path)
         waveform = self.resample(waveform, sample_rate)
 
-        cleaned_text = self.preprocess_text(text)
+        cleaned_text = text_preprocess(text)
         tokens = self.tokenize(cleaned_text)
 
         return waveform, tokens, cleaned_text
@@ -147,5 +115,6 @@ class Wav2VecCTCFA:
         ratio = waveform.size(1) / emission.size(1)
 
         df_timestamp = self.to_dataframe(token_spans, cleaned_text, ratio, self.bundle.sample_rate)
+        df_timestamp = text_postprocess(text, df_timestamp)
 
         return df_timestamp
